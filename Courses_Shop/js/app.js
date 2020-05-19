@@ -45,9 +45,12 @@ function leerDatosCurso(curso){
         precio: curso.querySelector(".precio span").textContent,
         id: curso.querySelector("a").getAttribute("data-id")
     };
-    // console.log(infoCurso);
+    // console.log(infoCurso); - Cheaqueando la info que cargo en el objeto
     // Una vez capturada esta data, insertarla en el carrito
-    insertarCarrito(infoCurso);   
+    insertarCarrito(infoCurso);  
+    
+    // Despues de insertar el curso en el carrito, lo almaceno en el Local Storage
+    guardarCursoLocalStorage(infoCurso);
 }
 
 // Funcion que inserta el curso seleccionado en el carrito (agregando el HTML en la tabla del carrito)
@@ -83,9 +86,10 @@ function eliminarCurso(e){
 // Funcion que elimina los cursos del carrito del DOM (<tr> creados con la funcion insertarCarrito)
 function vaciarCarrito(e){
     e.preventDefault();
+
     // Forma lenta de eliminar 
     // listaCursos.innerHTML = "";
-    
+
     // Forma rapida de eliminar
     while(listaCursos.firstChild){
         // Mientras que siga habiendo cursos (<tr> children) en la listaCursos, seguirá removiendo el primer curso de la lista hasta que no hayan más
@@ -94,4 +98,37 @@ function vaciarCarrito(e){
 
     // Evita que el div del carrito (espacio blanco) se cierre automaticamente cuando se hace click en vaciarCarritoBtn (si la sumatoria de los height de los <tr> no supera el height dispuesto para el submenu carrito)
     return false;
+}
+
+// Funcion que almacena curso agregado al carrito en el Local Storage
+function guardarCursoLocalStorage(curso){
+    // console.log(curso); - Cheaqueando que el pasaje de variables funcione
+    let cursos;
+
+    // Asignamos a nuestra variable el array vacio o cargado generado del LS
+    cursos = obtenerCursosLocalStorage();
+    
+    // console.log(cursos); - Cheaqueando lo que vuelve del LS
+    
+    // El curso seleccionado se agrega al Array 
+    cursos.push(curso);
+
+    // Una vez modificado el Array, lo convierto a String y actualizamos el objeto "cursos" del Local Storage
+    localStorage.setItem("cursos", JSON.stringify(cursos));
+}
+
+// Funcion que se encarga de verificar si es que hay cursos previamente almacenados en el Local Storage
+function obtenerCursosLocalStorage(){
+    let cursosLS;
+
+    // Comprobamos si es que existe algun curso en el objeto "cursos" del LS
+    if(localStorage.getItem("cursos") === null){
+        // Si no hay cursos, genero un Array vacio
+        cursosLS = [];
+    } else {
+        // Si hay cursos, convierto el objeto String "cursos" en Array 
+        cursosLS = JSON.parse(localStorage.getItem("cursos"));
+    }
+    // Devuelvo el Array generado
+    return cursosLS;
 }
