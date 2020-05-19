@@ -2,6 +2,7 @@
 const carrito = document.getElementById("carrito");
 const cursos = document.getElementById("lista-cursos");
 const listaCursos = document.querySelector("#lista-carrito tbody");
+const vaciarCarritoBtn = document.getElementById("vaciar-carrito");
 
 // Event Listeners
 cargarEventListeners();
@@ -12,6 +13,9 @@ function cargarEventListeners() {
 
     // Se ejecuta cuando se elimina un curso del carrito
     carrito.addEventListener("click", eliminarCurso);
+
+    // Se ejecuta cuando se elimina un curso del carrito
+    vaciarCarritoBtn.addEventListener("click", vaciarCarrito);
 }
 
 
@@ -65,7 +69,7 @@ function insertarCarrito(curso){
     listaCursos.appendChild(row);
 }
 
-// Funcion que elimina el curso del carrito indicado
+// Funcion que elimina el curso indicado del carrito (del DOM)
 function eliminarCurso(e){
     e.preventDefault();
     // console.log("Curso eliminado"); - Cheaqueando que las funciones se comuniquen 
@@ -74,4 +78,20 @@ function eliminarCurso(e){
         // 1er padre = <td> // 2do padre = <tr> (fila del carrito)
         e.target.parentElement.parentElement.remove(); 
     }
+}
+
+// Funcion que elimina los cursos del carrito del DOM (<tr> creados con la funcion insertarCarrito)
+function vaciarCarrito(e){
+    e.preventDefault();
+    // Forma lenta de eliminar 
+    // listaCursos.innerHTML = "";
+    
+    // Forma rapida de eliminar
+    while(listaCursos.firstChild){
+        // Mientras que siga habiendo cursos (<tr> children) en la listaCursos, seguirá removiendo el primer curso de la lista hasta que no hayan más
+        listaCursos.removeChild(listaCursos.firstChild);
+    }
+
+    // Evita que el div del carrito (espacio blanco) se cierre automaticamente cuando se hace click en vaciarCarritoBtn (si la sumatoria de los height de los <tr> no supera el height dispuesto para el submenu carrito)
+    return false;
 }
