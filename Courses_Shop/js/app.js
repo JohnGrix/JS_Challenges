@@ -1,8 +1,7 @@
 // Variables
 const carrito = document.getElementById("carrito");
 const cursos = document.getElementById("lista-cursos");
-
-
+const listaCursos = document.querySelector("#lista-carrito tbody");
 
 // Event Listeners
 cargarEventListeners();
@@ -10,7 +9,6 @@ cargarEventListeners();
 function cargarEventListeners() {
     // Se ejecuta cuando se presiona "Agregar Carrito"
     cursos.addEventListener("click", comprarCurso);
-
 }
 
 
@@ -33,6 +31,33 @@ function comprarCurso(e){
 
 // Funcion que lee la informacion del curso
 function leerDatosCurso(curso){
-    console.log(curso);
-    
+    // Objeto que contiene el id, img, precio y titulo del curso
+    const infoCurso = {
+        imagen: curso.querySelector("img").src,
+        titulo: curso.querySelector("h4").textContent,
+        precio: curso.querySelector(".precio span").textContent,
+        id: curso.querySelector("a").getAttribute("data-id")
+    };
+    // console.log(infoCurso);
+    // Una vez capturada esta data, insertarla en el carrito
+    insertarCarrito(infoCurso);   
+}
+
+// Funcion que inserta el curso seleccionado en el carrito (agregando el HTML en la tabla del carrito)
+function insertarCarrito(curso){
+    // Crear elemento tr para ser insertado en el tbody del carrito
+    const row = document.createElement("tr");
+    // Rellenar tr (no es necesario envolverlo en un <tr></tr> porque ya fue creado ese elemento en la linea anterior)
+    row.innerHTML = `
+        <td>
+            <img src="${curso.imagen}" alt="Course's image" width="100">
+        </td>
+        <td>${curso.titulo}</td>
+        <td>${curso.precio}</td>
+        <td>
+            <a href="#" class="borrar-curso" data-id="${curso.id}">X</a>
+        </td>
+    `;
+    // Agregarle el hijo que acabamos de crear a la listaCursos (.lista-carrito > tbody)
+    listaCursos.appendChild(row);
 }
