@@ -79,11 +79,23 @@ function insertarCarrito(curso){
 function eliminarCurso(e){
     e.preventDefault();
     // console.log("Curso eliminado"); - Cheaqueando que las funciones se comuniquen 
-    // Si el elemento clickeado, la X, contiene .borrar-curso, removemos la fila del carrito
+    
+    let curso,
+        cursoID;
+
+    // Si el elemento clickeado, la X, contiene .borrar-curso, almacenamos el curso en memoria, extraemos su ID y lo removemos del DOM
     if(e.target.classList.contains("borrar-curso")){
+        // Almacenamos el elemento <tr> (curso)
         // 1er padre = <td> // 2do padre = <tr> (fila del carrito)
-        e.target.parentElement.parentElement.remove(); 
+        curso = e.target.parentElement.parentElement
+        // Extraemos el ID del curso, examinando el elemento <tr>
+        cursoID = curso.querySelector("a").getAttribute("data-id");
+        // console.log(cursoID); - Cheaqueando que el ID es tomado
+        // Removemos el curso del DOM
+        curso.remove();       
     }
+    // Eliminar curso del LS por medio de su ID
+    eliminarCursoLocalStorage(cursoID);
 }
 
 // Funcion que elimina los cursos del carrito del DOM (<tr> creados con la funcion insertarCarrito)
@@ -98,6 +110,9 @@ function vaciarCarrito(e){
         // Mientras que siga habiendo cursos (<tr> children) en la listaCursos, seguirá removiendo el primer curso de la lista hasta que no hayan más
         listaCursos.removeChild(listaCursos.firstChild);
     }
+
+    // Vaciar Local Storage despues de eliminar cursos de la listaCursos
+    vaciarLocalStorage();
 
     // Evita que el div del carrito (espacio blanco) se cierre automaticamente cuando se hace click en vaciarCarritoBtn (si la sumatoria de los height de los <tr> no supera el height dispuesto para el submenu carrito)
     return false;
@@ -149,4 +164,27 @@ function leerLocalStorage(){
     cursosLS.forEach(function(curso){
         insertarCarrito(curso);
     });
+}
+
+// Funcion que se encarga de eliminar el curso del Local Storage por el ID
+function eliminarCursoLocalStorage(curso){
+    //    console.log(curso); - Cheaqueando que las funciones se comuniquen 
+    let cursosLS;
+    // Asignamos a nuestra variable el array vacio o cargado generado del LS
+    cursosLS = obtenerCursosLocalStorage();
+    // Iteramos comparando el ID del curso con lo del LS
+    cursosLS.forEach(function(cursoLS, index){
+        if(cursoLS.id === curso){
+            // Cuando encontramos el curso seleccionado en el LS, reconocemos el indice en el Array y borramos 1 posicion hacia adelante desde nuestra posicion
+            cursosLS.splice(index, 1);
+        }
+    });
+    // Pasamos a String el Array modificado y actualizamos la version del LS
+    localStorage.setItem("cursos", JSON.stringify(cursosLS));
+}
+
+// Funcion que se encarga de eliminar todos los cursos de Local Storage cuando vaciarCarritoBtn es oprimido
+function vaciarLocalStorage(){
+    // Vaciamos el Local Storage
+    localStorage.clear();
 }
