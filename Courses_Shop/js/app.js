@@ -16,6 +16,9 @@ function cargarEventListeners() {
 
     // Se ejecuta cuando se elimina un curso del carrito
     vaciarCarritoBtn.addEventListener("click", vaciarCarrito);
+
+    // Cuando la página termina de cargar, mostrar info de Local Storage
+    document.addEventListener('DOMContentLoaded', leerLocalStorage);
 }
 
 
@@ -100,7 +103,7 @@ function vaciarCarrito(e){
     return false;
 }
 
-// Funcion que almacena curso agregado al carrito en el Local Storage
+// Funcion que almacena el curso agregado al carrito en el Local Storage
 function guardarCursoLocalStorage(curso){
     // console.log(curso); - Cheaqueando que el pasaje de variables funcione
     let cursos;
@@ -131,4 +134,19 @@ function obtenerCursosLocalStorage(){
     }
     // Devuelvo el Array generado
     return cursosLS;
+}
+
+// Funcion que se encarga de imprimir los cursos de Local Storage en el carrito
+function leerLocalStorage(){
+    let cursosLS;
+
+    // Asignamos a nuestra variable el array vacio o cargado generado del LS
+    cursosLS = obtenerCursosLocalStorage();
+
+    // console.log(cursosLS); - Cheaqueando la info que levanto de LS
+    
+    // Cada objeto del Array cursosLS (curso) es pasado a la funcion insertarCarrito 
+    cursosLS.forEach(function(curso){
+        insertarCarrito(curso);
+    });
 }
