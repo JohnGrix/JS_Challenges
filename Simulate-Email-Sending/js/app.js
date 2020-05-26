@@ -3,30 +3,34 @@ const email = document.getElementById("email");
 const asunto = document.getElementById("asunto");
 const mensaje = document.getElementById("mensaje");
 const enviarBtn = document.getElementById("enviar");
+// Opcion B para enviar el formulario con enviarBtn 
+const formularioEnviar = document.getElementById("enviar-email");
 
-
+const resetBtn = document.getElementById("resetBtn");
 
 // Event Listeners
 eventListeners();
 
 function eventListeners() {
-    // Ejecutado al cargar el contenido del DOM > Deshabilita enviarBtn
-    document.addEventListener("DOMContentLoaded", inicioApp);
-
     // Valido campos del formulario al remover el focus de un campo del formulario
-    email.addEventListener("blur", validarCampo);
-    asunto.addEventListener("blur", validarCampo);
-    mensaje.addEventListener("blur", validarCampo);
+    email.addEventListener("keyup", validarCampo);
+    asunto.addEventListener("keyup", validarCampo);
+    mensaje.addEventListener("keyup", validarCampo);
+
+    // Boton de enviar en el submit
+    // enviarBtn.addEventListener("click", enviarEmail);
+
+    // Opcion B para enviar el formulario con enviarBtn 
+    formularioEnviar.addEventListener("submit", enviarMail);
+
+    resetBtn.addEventListener("click", resetFormulario);
+
+    // Al utilizar el EventListener por la accion "submit", la URL cambia, haciendo que la función HTMLElement.reset() funcione
 }
 
 
 
 // Funciones
-// Funcion ejecutada al cargar la pagina > Deshabilita enviarBtn
-function inicioApp() {
-    // Deshabilitar boton Enviar (enviarBtn)
-    enviarBtn.disabled = true;
-}
 
 // Funcion que valida que el campo tenga algo escrito
 function validarCampo() {
@@ -41,10 +45,10 @@ function validarCampo() {
     if (this.type === "email") {
         validarEmail(this);
     }
-    
+
     // Reviso el documento buscando por algun elemento que tenga la clase .error. Si no encuentro ninguno, el Array permanece vacio
     let errores = document.querySelectorAll(".error");
-    
+
     // Si ninguno de los campos del formulario esta vacio
     if (email.value != "" && asunto.value != "" && mensaje.value != "") {
         // Si no hay ningun campo que contenga .error  
@@ -59,6 +63,46 @@ function validarCampo() {
         // Deshabilitar el boton de Enviar
         enviarBtn.disabled = true;
     }
+}
+
+// Enviar el correo electrónico al presionar el boton Enviar
+function enviarEmail(e) {
+    // Spinner GIF al presionar Enviar
+    const spinnerGIF = document.querySelector("#spinner");
+    // Hacer visible el elemento que se encontraba con display = none;
+    spinnerGIF.style.display = "block";
+
+    // Email enviado GIF
+    // Crear elemento img
+    const enviado = document.createElement("img");
+    // Asignar el atributo source al elemento img enviado
+    enviado.src = "img/mail.gif"
+    // Hacer visible el elemento img enviado  
+    enviado.style.display = "block";
+
+    // Ocultar Spinner GIF y mostrar GIF Email enviado despues de un tiempo
+    // Funcion que define una pausa de 3000 ms en la ejecucion y una accion a realizar despues de la pausa
+    setTimeout(function () {
+        spinnerGIF.style.display = "none";
+        // Insertar en el DOM el elemento Email enviado GIF
+        document.querySelector("#loaders").appendChild(enviado);
+        // Mostrar el GIF Email enviado por 5000 ms
+        setTimeout(function () {
+            // Remover elemento Email enviado GIF del DOM
+            enviado.remove();
+            // Resetear formulario
+            formularioEnviar.reset();
+        }, 5000);
+    }, 3000);
+
+    e.preventDefault();
+    // console.log("Mail enviado");
+}
+
+// Resetear el formulario
+function resetFormulario(e) {
+    formularioEnviar.reset();
+    e.preventDefault();
 }
 
 // Validar que los campos del formulario no esten vacios
